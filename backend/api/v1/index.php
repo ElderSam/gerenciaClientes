@@ -11,17 +11,16 @@ class API
             
             array_shift($url); //reorganiza o array, tirando o que está na primeira posição
             array_shift($url);
-            array_shift($url); 
 
             $classe = $url[0];
-
+            
             try
             {
-                $route = "./routes/".$classe.".php"; //monta o caminho para o arquivo da rota solicitada
+                $route = __DIR__ . "./routes/".$classe.".php"; //monta o caminho para o arquivo da rota solicitada
 
                 if(file_exists($route)) //se o arquivo da rota existe
                 {
-                    require __DIR__ . $route;
+                    require $route;
                 }else
                 {
                     return json_encode(array(
@@ -29,7 +28,7 @@ class API
                         'dados'=>'Rota inexistente!'
                     ));
                 }
-                
+
             }catch(Exception $e){
 
                 return json_encode(array(
