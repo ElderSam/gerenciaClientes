@@ -8,7 +8,16 @@ $u = new Usuario();
 
 if($_SERVER['REQUEST_METHOD'] == 'GET')
 {
-    echo $u->list();
+    $url = explode('/', $_GET['url']);
+
+    if(isset($url[3]))
+    {
+        $id = $url[3];
+    }else{
+        $id = false;
+    }
+
+    echo $u->list($id);
 
 }else if($_SERVER['REQUEST_METHOD'] == 'POST')
 {
