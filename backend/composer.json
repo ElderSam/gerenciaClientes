@@ -1,0 +1,20 @@
+{
+    "name": "eldersam/gerenciaclientes",
+    "description": "Sistema para Gerenciar clientes e endereços",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ElderSam",
+            "email": "eldersamuel98@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Classes\\": "Classes\\api\\v1\\Classes"
+        }
+    }
+
+}

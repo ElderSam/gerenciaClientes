@@ -1,10 +1,10 @@
 <?php 
 
-namespace Locacao\DB;
+namespace Classes\DB;
 
 class Sql {
 
-	const DBNAME = "id12706030_db_locacao";
+	const DBNAME = "db_system";
 	const HOSTNAME = "localhost";
 	
 	private $conn;
@@ -21,8 +21,8 @@ class Sql {
 
 		}else{ //se estiver em um servidor online
 
-			$username = "id12706030_admin";
-			$password = "+!h{IC*7}JhPc^2n";
+			$username = "your_username";
+			$password = "your_password";
 		}
 
 		$this->conn = new \PDO(

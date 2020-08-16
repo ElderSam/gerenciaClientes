@@ -1,12 +1,15 @@
 <?php
 
-require __DIR__ . "/DB/Sql.php";
+
+//use Exception;
+namespace Classes;
+
+use Classes\DB\Sql;
 
 class Usuario
 {
     public function list()
     {        
-        
-        echo json_encode(['method'=>'GET']);
+
     }
 }

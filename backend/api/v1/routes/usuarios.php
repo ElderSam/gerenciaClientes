@@ -1,6 +1,8 @@
 <?php
 
-require_once __DIR__ . "/../classes/Usuario.php";
+require __DIR__ . '/../../vendor/autoload.php';
+
+use Classes\Usuario;
 
 $u = new Usuario();
 
