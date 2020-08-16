@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 16-Ago-2020 às 21:05
+-- Tempo de geração: 16-Ago-2020 às 22:23
 -- Versão do servidor: 10.4.11-MariaDB
 -- versão do PHP: 7.4.5
 
@@ -125,6 +125,55 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_estados_update` (IN `pid` INT(11
     WHERE id = vidEstado;
     
     SELECT * FROM estados WHERE id = pid;
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_municipios_delete` (IN `pid` INT(11))  BEGIN
+  
+    DECLARE vidMunicipio INT;
+    
+  SELECT vidMunicipio INTO vidMunicipio
+    FROM municipios
+    WHERE id = pid;
+    
+    DELETE FROM municipios WHERE id = pid;
+
+    SELECT vidMunicipio INTO vidMunicipio
+        FROM municipios
+        WHERE id = pid;
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_municipios_save` (IN `pdescMunicipio` VARCHAR(30), IN `pidEstado` INT(2))  BEGIN
+  
+    DECLARE vidMunicipio INT;
+    
+  INSERT INTO municipios (descMunicipio, idEstado)
+    VALUES(pdescMunicipio, pidEstado);
+    
+    SET vidMunicipio = LAST_INSERT_ID();
+    
+    SELECT * FROM municipios WHERE id = LAST_INSERT_ID();
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_municipios_update` (IN `pid` INT(11), IN `pdescMunicipio` VARCHAR(30), IN `pidEstado` INT(2))  BEGIN
+  
+    DECLARE vidMunicipio INT;
+    
+    SELECT id INTO vidMunicipio
+    FROM municipios
+    WHERE id = pid;
+
+    UPDATE municipios
+    SET
+        descMunicipio = pdescMunicipio,
+        idEstado = pidEstado
+        
+    
+    WHERE id = vidMunicipio;
+    
+    SELECT * FROM municipios WHERE id = pid;
     
 END$$
 
@@ -268,7 +317,9 @@ CREATE TABLE `municipios` (
 
 INSERT INTO `municipios` (`id`, `descMunicipio`, `idEstado`) VALUES
 (1, 'São Paulo', 1),
-(2, 'Campinas', 1);
+(2, 'Campinas', 1),
+(3, 'Santos', 1),
+(7, 'Rio Claro', 1);
 
 -- --------------------------------------------------------
 
@@ -361,7 +412,7 @@ ALTER TABLE `estados`
 -- AUTO_INCREMENT de tabela `municipios`
 --
 ALTER TABLE `municipios`
-  MODIFY `id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
