@@ -3,17 +3,21 @@
 #TAREFAS 
 
 Backend;
+
     - [x] criar Banco de Dados
 
-    - [ ] criar API 
-        - [ ] rotas de usuários (GET, POST, PUT, DELETE)
-        - [ ] rotas de clientes (GET, POST, PUT, DELETE)
-        - [ ] rotas de estados e cidades (GET)
+    - [x] criar API: rotas (GET, POST, PUT, DELETE)
+        - [x] rotas de usuários
+        - [x] rotas de clientes 
+        - [x] rotas de estados e municipio
+        - [x] rotas de endereços 
 
 Frontend;
+
     - [ ] cadastro de usuário
     - [ ] área de login
     - [ ] cadastro de clientes
+
 
 
 #DOCUMENTAÇÃO
