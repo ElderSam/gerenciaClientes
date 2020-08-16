@@ -6,9 +6,10 @@ use \Classes\Usuario;
 
 $u = new Usuario();
 
-if($_SERVER['REQUEST_METHOD'] == 'GET')
+$url = explode('/', $_GET['url']);
+
+if($_SERVER['REQUEST_METHOD'] == 'GET') /* Listar usuários --------------- */
 {
-    $url = explode('/', $_GET['url']);
 
     if(isset($url[3]))
     {
@@ -19,15 +20,39 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
 
     echo $u->list($id);
 
-}else if($_SERVER['REQUEST_METHOD'] == 'POST')
+}else if($_SERVER['REQUEST_METHOD'] == 'POST') /* Cadastrar usuário --------------- */
 {
-    echo "POST";
+    echo $u->create($_POST);
 
-}else if($_SERVER['REQUEST_METHOD'] == 'PUT')
+}else if($_SERVER['REQUEST_METHOD'] == 'PUT') /* Atualizar usuário --------------- */
 {
-    echo "PUT";
+    if(!isset($url[3]))
+        exit(json_encode(array('status'=>'error', 'message'=>"Id don't passed by URL (GET)")));
+    
+    $id = $url[3];
+    $data = urldecode(file_get_contents('php://input'));
+    
+    //echo $data;
 
-}else if($_SERVER['REQUEST_METHOD'] == 'DELETE')
+    if(strpos($data, '=') !== false)
+    {
+        $allPairs = array();
+        $data = explode('&', $data); //separa tudo que tiver entre & na string e inserre em um array
+        
+        foreach($data as $pair) {
+            $pair = explode('=', $pair);
+            $allPairs[$pair[0]] = $pair[1];
+        }
+    }
+
+    echo $u->update($id, $allPairs);
+
+}else if($_SERVER['REQUEST_METHOD'] == 'DELETE') /* Listar deletar --------------- */
 {
-    echo "DELETE";
+    if(!isset($url[3]))
+        exit(json_encode(array('status'=>'error', 'message'=>"Id don't passed by URL (GET)")));
+
+    $id = $url[3];
+    
+    echo $u->delete($id);
 }
