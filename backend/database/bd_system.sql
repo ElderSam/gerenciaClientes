@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 16-Ago-2020 às 20:13
+-- Tempo de geração: 16-Ago-2020 às 20:45
 -- Versão do servidor: 10.4.11-MariaDB
 -- versão do PHP: 7.4.5
 
@@ -27,6 +27,58 @@ DELIMITER $$
 --
 -- Procedimentos
 --
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_clientes_delete` (IN `pid` INT(11))  BEGIN
+  
+    DECLARE vidCliente INT;
+    
+  SELECT vidCliente INTO vidCliente
+    FROM clientes
+    WHERE id = pid;
+    
+    DELETE FROM clientes WHERE id = pid;
+
+    SELECT vidCliente INTO vidCliente
+        FROM clientes
+        WHERE id = pid;
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_clientes_save` (IN `pnome` VARCHAR(100), IN `pdtNasc` DATE, IN `pCPF` VARCHAR(11), IN `pRG` VARCHAR(9), IN `ptelefone` VARCHAR(11))  BEGIN
+  
+    DECLARE vidCliente INT;
+    
+  INSERT INTO clientes (nome, dtNasc, CPF, RG, telefone)
+    VALUES(pnome, pdtNasc, pCPF, pRG, ptelefone);
+    
+    SET vidCliente = LAST_INSERT_ID();
+    
+    SELECT * FROM clientes WHERE id = LAST_INSERT_ID();
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_clientes_update` (IN `pid` INT(11), IN `pnome` VARCHAR(100), IN `pdtNasc` DATE, IN `pCPF` VARCHAR(11), IN `pRG` VARCHAR(9), IN `ptelefone` VARCHAR(11))  BEGIN
+  
+    DECLARE vidCliente INT;
+    
+    SELECT id INTO vidCliente
+    FROM clientes
+    WHERE id = pid;
+
+    UPDATE clientes
+    SET
+        nome = pnome,
+        dtNasc = pdtNasc,
+        CPF = pCPF,
+        RG = pRG,
+        telefone = ptelefone
+        
+    
+    WHERE id = vidCliente;
+    
+    SELECT * FROM clientes WHERE id = pid;
+    
+END$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_usuarios_delete` (IN `pid` INT(11))  BEGIN
   
     DECLARE vidUsuario INT;
@@ -101,7 +153,9 @@ CREATE TABLE `clientes` (
 --
 
 INSERT INTO `clientes` (`id`, `nome`, `dtNasc`, `CPF`, `RG`, `telefone`, `dtCadastro`) VALUES
-(1, 'João Pedro', '1984-03-26', '34578960070', '547690011', '1935416708', '2020-08-14 20:55:06');
+(1, 'João Pedro', '1984-03-26', '34578960070', '547690011', '1935416708', '2020-08-14 20:55:06'),
+(2, 'Maria da Silva', '1997-12-27', '56948634990', '524593440', '1967349088', '2020-08-16 15:36:22'),
+(3, 'Cliente Teste', '1990-03-28', '67034023490', '670934561', '19999990000', '2020-08-16 15:37:52');
 
 -- --------------------------------------------------------
 
@@ -192,7 +246,8 @@ INSERT INTO `usuarios` (`id`, `nome`, `email`, `login`, `senha`, `dtCadastro`) V
 (3, 'João Henrique', 'joao@gmail.com', 'joao79', 'changed56', '2020-08-16 13:44:46'),
 (4, 'Elder', 'teste@gmail.com', 'joao', '', '2020-08-16 13:47:47'),
 (5, 'Elder', 'teste@gmail.com', 'joao', '', '2020-08-16 13:48:44'),
-(7, 'newTest', 'new@outlook.com', 'new56460', '5grebyw', '2020-08-16 14:44:24');
+(7, 'newTest', 'new@outlook.com', 'new56460', '5grebyw', '2020-08-16 14:44:24'),
+(9, 'newTest', 'new@outlook.com', 'new56460', '5grebyw', '2020-08-16 15:35:10');
 
 --
 -- Índices para tabelas despejadas
@@ -239,7 +294,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de tabela `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `enderecos`
@@ -263,7 +318,7 @@ ALTER TABLE `municipios`
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Restrições para despejos de tabelas
