@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 16-Ago-2020 às 20:45
+-- Tempo de geração: 16-Ago-2020 às 21:05
 -- Versão do servidor: 10.4.11-MariaDB
 -- versão do PHP: 7.4.5
 
@@ -76,6 +76,55 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_clientes_update` (IN `pid` INT(1
     WHERE id = vidCliente;
     
     SELECT * FROM clientes WHERE id = pid;
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_estados_delete` (IN `pid` INT(11))  BEGIN
+  
+    DECLARE vidEstado INT;
+    
+  SELECT vidEstado INTO vidEstado
+    FROM estados
+    WHERE id = pid;
+    
+    DELETE FROM estados WHERE id = pid;
+
+    SELECT vidEstado INTO vidEstado
+        FROM estados
+        WHERE id = pid;
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_estados_save` (IN `pdescEstado` VARCHAR(30), IN `psigla` VARCHAR(2))  BEGIN
+  
+    DECLARE vidEstado INT;
+    
+  INSERT INTO estados (descEstado, sigla)
+    VALUES(pdescEstado, psigla);
+    
+    SET vidEstado = LAST_INSERT_ID();
+    
+    SELECT * FROM estados WHERE id = LAST_INSERT_ID();
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_estados_update` (IN `pid` INT(11), IN `pdescEstado` VARCHAR(30), IN `psigla` VARCHAR(2))  BEGIN
+  
+    DECLARE vidEstado INT;
+    
+    SELECT id INTO vidEstado
+    FROM estados
+    WHERE id = pid;
+
+    UPDATE estados
+    SET
+        descEstado = pdescEstado,
+        sigla = psigla
+        
+    
+    WHERE id = vidEstado;
+    
+    SELECT * FROM estados WHERE id = pid;
     
 END$$
 
