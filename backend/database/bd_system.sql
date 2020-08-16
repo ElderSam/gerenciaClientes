@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 15-Ago-2020 às 02:02
+-- Tempo de geração: 16-Ago-2020 às 20:13
 -- Versão do servidor: 10.4.11-MariaDB
 -- versão do PHP: 7.4.5
 
@@ -22,6 +22,63 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `bd_system` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 USE `bd_system`;
+
+DELIMITER $$
+--
+-- Procedimentos
+--
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_usuarios_delete` (IN `pid` INT(11))  BEGIN
+  
+    DECLARE vidUsuario INT;
+    
+  SELECT vidUsuario INTO vidUsuario
+    FROM usuarios
+    WHERE id = pid;
+    
+    DELETE FROM usuarios WHERE id = pid;
+
+    SELECT vidUsuario INTO vidUsuario
+        FROM usuarios
+        WHERE id = pid;
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_usuarios_save` (IN `pnome` VARCHAR(100), IN `pemail` VARCHAR(30), IN `plogin` VARCHAR(15), IN `psenha` VARCHAR(20))  BEGIN
+  
+    DECLARE vidUsuario INT;
+    
+  INSERT INTO usuarios (nome, email, login, senha)
+    VALUES(pnome, pemail, plogin, psenha);
+    
+    SET vidUsuario = LAST_INSERT_ID();
+    
+    SELECT * FROM usuarios WHERE id = LAST_INSERT_ID();
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_usuarios_update` (IN `pid` INT(11), IN `pnome` VARCHAR(100), IN `pemail` VARCHAR(30), IN `plogin` VARCHAR(15), IN `psenha` VARCHAR(20))  BEGIN
+  
+    DECLARE vidUsuario INT;
+    
+    SELECT id INTO vidUsuario
+    FROM usuarios
+    WHERE id = pid;
+
+    UPDATE usuarios
+    SET
+        nome = pnome,
+        email = pemail,
+        login = plogin,
+        senha = psenha
+        
+    
+    WHERE id = vidUsuario;
+    
+    SELECT * FROM usuarios WHERE id = pid;
+    
+END$$
+
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -130,7 +187,12 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nome`, `email`, `login`, `senha`, `dtCadastro`) VALUES
-(1, 'Administrador', 'admin@gmail.com', 'admin', 'teste2020', '2020-08-14 20:52:32');
+(1, 'Administrador', 'admin@gmail.com', 'admin', 'teste2020', '2020-08-14 20:52:32'),
+(2, 'João Henrique', 'teste@gmail.com', 'joao', 'joao1794', '2020-08-16 13:17:29'),
+(3, 'João Henrique', 'joao@gmail.com', 'joao79', 'changed56', '2020-08-16 13:44:46'),
+(4, 'Elder', 'teste@gmail.com', 'joao', '', '2020-08-16 13:47:47'),
+(5, 'Elder', 'teste@gmail.com', 'joao', '', '2020-08-16 13:48:44'),
+(7, 'newTest', 'new@outlook.com', 'new56460', '5grebyw', '2020-08-16 14:44:24');
 
 --
 -- Índices para tabelas despejadas
@@ -201,7 +263,7 @@ ALTER TABLE `municipios`
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restrições para despejos de tabelas
