@@ -4,7 +4,7 @@ namespace Classes\DB;
 
 class Sql {
 
-	const DBNAME = "db_system";
+	const DBNAME = "bd_system";
 	const HOSTNAME = "localhost";
 	
 	private $conn;

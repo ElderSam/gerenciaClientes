@@ -13,7 +13,7 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "Classes\\": "Classes\\api\\v1\\Classes"
+            "Classes\\": "api\\v1\\Classes"
         }
     }
 
