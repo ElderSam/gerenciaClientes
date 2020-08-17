@@ -1,7 +1,5 @@
 <?php
 
-require __DIR__ . './../../../vendor/autoload.php';
-
 use \Classes\Endereco;
 
 $c = new Endereco();

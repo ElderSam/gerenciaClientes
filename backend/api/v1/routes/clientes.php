@@ -1,7 +1,5 @@
 <?php
 
-require __DIR__ . './../../../vendor/autoload.php';
-
 use \Classes\Cliente;
 
 $c = new Cliente();

@@ -8,6 +8,11 @@ use Classes\DB\Sql;
 
 class Usuario
 {
+    /* Constantes */
+    const SESSION = "User";
+    const SECRET = "Cli_Secret"; //here your key (secret)
+    const SECRET_IV = "Cli_Secret_IV"; //here your key 2 (secret)
+
     /* Atributos */
     private $id;
     private $nome;
@@ -115,10 +120,79 @@ class Usuario
     {
         $this->senha = $senha;
 
+
         return $this;
     }
 
     /* Methods ----------------------------------- */
+    
+    public static function login($login, $password){
+
+        $sql = new Sql();
+        $error = false;
+
+        $results = $sql->select("SELECT * FROM usuarios WHERE login = :LOGIN", array(
+            ":LOGIN"=>$login 
+        ));
+
+        if(count($results) === 0) //se não encontrou o login
+        {
+            $error = true;
+            //throw new \Exception("Usuário inexistente ou senha inválida.");
+        }else{
+            
+            $data = $results[0];
+
+            //if(password_verify($password, $data["senha"]) === true){ //se a senha digitada é equivalente ao Hash do banco
+            
+            if($password == $data["senha"]){
+                $user = new Usuario();
+    
+                $user->setAll($data);
+    
+                $arrUser = array();
+                $arrUser['id'] = $data["id"];
+                $arrUser['login'] = $login;
+                $arrUser['senha'] = $password;
+                
+                $_SESSION[Usuario::SESSION] = $arrUser;
+                
+                //return $user;
+                echo json_encode([
+                    "error"=>false
+                ]);
+                
+            }else {
+                $error = true;
+                //throw new \Exception("Usuário inexistente ou senha inválida.");
+            }
+        }
+
+        if($error){
+            
+            echo json_encode([
+                "error"=>true,
+                "msg"=>"Usuário inexistente ou senha inválida!"
+            ]);
+        }
+
+    }
+
+    public static function verifyLogin(){
+
+        if(
+            !isset($_SESSION[Usuario::SESSION])
+            ||
+            !$_SESSION[Usuario::SESSION]
+            ||
+            !(int)$_SESSION[Usuario::SESSION]["id"] > 0 //se é um usuário. obs: se for vazia, transforma em 0
+        ){
+
+            header("Location: http://localhost/api/v1/session/login");
+            exit;
+            
+        }
+    }
     
     /* insere o valor de todos os Atributos */
     public function setAll($data)

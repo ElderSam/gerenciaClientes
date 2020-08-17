@@ -1,7 +1,5 @@
 <?php
 
-require __DIR__ . './../../../vendor/autoload.php';
-
 use \Classes\Usuario;
 
 $u = new Usuario();
