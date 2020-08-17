@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 16-Ago-2020 às 22:23
+-- Tempo de geração: 17-Ago-2020 às 03:03
 -- Versão do servidor: 10.4.11-MariaDB
 -- versão do PHP: 7.4.5
 
@@ -76,6 +76,60 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_clientes_update` (IN `pid` INT(1
     WHERE id = vidCliente;
     
     SELECT * FROM clientes WHERE id = pid;
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_enderecos_delete` (IN `pid` INT(11))  BEGIN
+  
+    DECLARE vidEndereco INT;
+    
+  SELECT vidEndereco INTO vidEndereco
+    FROM enderecos
+    WHERE id = pid;
+    
+    DELETE FROM enderecos WHERE id = pid;
+
+    SELECT vidEndereco INTO vidEndereco
+        FROM enderecos
+        WHERE id = pid;
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_enderecos_save` (IN `pidCliente` VARCHAR(11), IN `pCEP` VARCHAR(8), IN `plogradouro` VARCHAR(100), IN `pnumero` INT(5), IN `pbairro` VARCHAR(30), IN `pcomplemento` VARCHAR(30), IN `pidMunicipio` INT(6))  BEGIN
+  
+    DECLARE vidEndereco INT;
+    
+  INSERT INTO enderecos (idCliente, CEP, logradouro, numero, bairro, complemento, idMunicipio)
+    VALUES(pidCliente, pCEP, plogradouro, pnumero, pbairro, pcomplemento, pidMunicipio);
+    
+    SET vidEndereco = LAST_INSERT_ID();
+    
+    SELECT * FROM enderecos WHERE id = LAST_INSERT_ID();
+    
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_enderecos_update` (IN `pid` INT(11), IN `pidCliente` VARCHAR(11), IN `pCEP` VARCHAR(8), IN `plogradouro` VARCHAR(100), IN `pnumero` INT(5), IN `pbairro` VARCHAR(30), IN `pcomplemento` VARCHAR(30), IN `pidMunicipio` INT(6))  BEGIN
+  
+    DECLARE vidEndereco INT;
+    
+    SELECT id INTO vidEndereco
+    FROM enderecos
+    WHERE id = pid;
+
+    UPDATE enderecos
+    SET
+        idCliente = pidCliente,
+        CEP = pCEP,
+        logradouro = plogradouro,
+        numero = pnumero,
+        bairro = pbairro,
+        complemento = pcomplemento,
+        idMunicipio = pidMunicipio
+        
+    
+    WHERE id = vidEndereco;
+    
+    SELECT * FROM enderecos WHERE id = pid;
     
 END$$
 
@@ -278,7 +332,8 @@ CREATE TABLE `enderecos` (
 --
 
 INSERT INTO `enderecos` (`id`, `idCliente`, `CEP`, `logradouro`, `numero`, `bairro`, `complemento`, `idMunicipio`, `dtCadastro`) VALUES
-(1, 1, '13608512', 'Rua Guilherme Brant', 389, 'Jd. Santa Mônica', 'casa', 2, '2020-08-14 21:00:44');
+(1, 1, '13608512', 'Rua Guilherme Brant', 389, 'Jd. Santa Mônica', 'casa', 2, '2020-08-14 21:00:44'),
+(2, 3, '13400980', 'Avenida São Caetano', 580, 'Centro', 'fábrica', 3, '2020-08-16 20:03:49');
 
 -- --------------------------------------------------------
 
@@ -400,7 +455,7 @@ ALTER TABLE `clientes`
 -- AUTO_INCREMENT de tabela `enderecos`
 --
 ALTER TABLE `enderecos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `estados`
