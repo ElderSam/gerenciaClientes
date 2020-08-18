@@ -9,18 +9,30 @@ $url = explode('/', $_GET['url']);
 if($_SERVER['REQUEST_METHOD'] == 'GET') /* Listar clientes --------------- */
 {
 
-    if(isset($url[3]))
+    if(isset($url[3])) //listar por id
     {
         $id = $url[3];
     }else{
-        $id = false;
+        $id = false; //listar todos
     }
 
     echo $c->list($id);
 
-}else if($_SERVER['REQUEST_METHOD'] == 'POST') /* Cadastrar cliente --------------- */
+}else if($_SERVER['REQUEST_METHOD'] == 'POST') 
 {
-    echo $c->create($_POST);
+    if($url[3] == "list_datatables")
+    {
+        //Receber a requisão da pesquisa 
+        $requestData = $_REQUEST;
+
+        $clientes = new Cliente();
+        echo $clientes->ajax_list_clientes($requestData);  
+   
+    }else{
+
+        echo $c->create($_POST); /* Cadastrar cliente --------------- */
+    }
+    
 
 }else if($_SERVER['REQUEST_METHOD'] == 'PUT') /* Atualizar cliente --------------- */
 {

@@ -270,4 +270,115 @@ class Cliente
 
     }
 
+    
+    public function ajax_list_clientes($requestData)
+    {
+
+        $column_search = array("nome", "dtNasc", "RG", "CPF", "telefone"); //colunas pesquisáveis pelo datatables
+        $column_order = array("nome", "dtNasc", "RG", "CPF", "telefone"); //ordem que vai aparecer (o codigo primeiro)
+
+
+        $datatable = $this->get_datatable($requestData, $column_search, $column_order);
+
+        $data = array();
+
+        foreach ($datatable['data'] as $supplier) { //para cada registro retornado
+
+
+            // Ler e criar o array de dados ---------------------
+            
+            $row = [
+                "id"=>$supplier['id'],
+                "nome"=>$supplier['nome'],
+                "dtNasc"=>$supplier['dtNasc'],
+                "RG"=>$supplier['RG'],
+                "CPF"=>$supplier['CPF'],
+                "telefone"=>$supplier['telefone'],      
+            ];
+
+            $data[] = $row;
+        } //
+
+        //Cria o array de informações a serem retornadas para o Javascript
+        $json = array(
+            "draw" => intval($requestData['draw']), //para cada requisição é enviado um número como parâmetro
+            "recordsTotal" => $this->records_total(),  //Quantidade de registros que há no banco de dados
+            "recordsFiltered" => $datatable['totalFiltered'], //Total de registros quando houver pesquisa
+            "data" => $data,  //Array de dados completo dos dados retornados da tabela 
+        );
+
+        return json_encode($json); //enviar dados como formato json
+
+    }
+
+    public function total() { //retorna a quantidade todal de registros na tabela
+
+        $sql = new Sql();
+
+        $results = $sql->select("SELECT count(id) FROM clientes");
+        
+        return $results[0]['count(id)'];		
+    }
+    
+    public function records_total()
+    {
+        return $this->total();
+    } 
+
+    
+    public function get_datatable($requestData, $column_search, $column_order){
+        
+        $query = "SELECT * FROM clientes";
+
+        if (!empty($requestData['search']['value'])) { //verifica se eu digitei algo no campo de filtro
+
+            $first = TRUE;
+
+            foreach ($column_search as $field) {
+                
+               
+                $search = strtoupper($requestData['search']['value']); //tranforma em maiúsculo
+
+                //filtra no banco
+                if ($first) {
+                    $query .= " WHERE ($field LIKE '%$search%'"; //primeiro caso
+                    $first = FALSE;
+                } else {
+                    $query .= " OR $field LIKE '%$search%'";
+                }
+            } //fim do foreach
+            if (!$first) {
+                $query .= ")"; //termina o WHERE e a query
+            }
+
+        }
+        
+        $res = $this->searchAll($query);
+        $totalFiltered = count($res);
+
+        //ordenar o resultado
+        $query .= " ORDER BY " . $column_order[$requestData['order'][0]['column']] . " " . $requestData['order'][0]['dir'] . 
+        "  LIMIT " . $requestData['start'] . " ," . $requestData['length'] . "   "; 
+        
+        //echo $query;
+        return array(
+            'totalFiltered'=>$totalFiltered,
+            'data'=>$this->searchAll($query),
+        );
+    }
+
+    
+    public function searchAll($query){ //pesquisa genérica (para todos os campos). Recebe uma query
+
+        $sql = new Sql();
+
+        $results = $sql->select($query);
+
+        return $results;
+
+    }
+
+
+
+
 }
