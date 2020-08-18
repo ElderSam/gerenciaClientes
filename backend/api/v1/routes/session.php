@@ -15,5 +15,9 @@ if($method == "login"){
 
 
 }else if($method == "logout"){
-    Usuario::logout();
+    
+    $_SESSION[Usuario::SESSION] = NULL;
+    
+    header("Location: http://localhost/login");
+    exit;
 }

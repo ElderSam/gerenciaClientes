@@ -188,7 +188,7 @@ class Usuario
             !(int)$_SESSION[Usuario::SESSION]["id"] > 0 //se é um usuário. obs: se for vazia, transforma em 0
         ){
 
-            header("Location: http://localhost/api/v1/session/login");
+            header("Location: http://localhost/login.html");
             exit;
             
         }
@@ -202,7 +202,7 @@ class Usuario
         $this->setLogin($data['login']);
         $this->setSenha($data['senha']);
     }
-    
+
     /* Listar os usuários */
     public function list($id = false)
     {

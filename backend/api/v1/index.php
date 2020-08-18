@@ -12,10 +12,15 @@ class API
     public static function open($requisicao)
     {
         
+
         if(isset($requisicao['url'])) //se foi passada uma requisição
         { 
-                        
+        
+            
             $url = explode('/', $requisicao['url']);
+
+            if(isset($url[3]) && ($url[3] != "login")) 
+                Usuario::verifyLogin();
 
             if($url['0'] == 'api') //se foi feita uma requisição para o Back-end
             { 
@@ -29,6 +34,8 @@ class API
                 $file = $url[0];
 
                 header('Location: http://localhost/'.$file.".html");
+            
+                
             }       
 
            
@@ -56,8 +63,7 @@ class API
             
 		}else{
             //return "Server is running! API is up!";
-            Usuario::verifyLogin();
-            
+
             header('Location: http://localhost/clientes');
             //return "<script>window.location.href='http://localhost/';</script>";
 		}
