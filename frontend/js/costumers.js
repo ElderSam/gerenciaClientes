@@ -22,6 +22,8 @@ $(function() { //quando a página carrega
 
 		e.preventDefault();
 
+		$("#telefone").unmask();
+
 		let form = $('#formCostumer');
 
 		//A interface FormData fornece uma maneira fácil de construir um conjunto de pares chave/valor representando campos
@@ -31,7 +33,6 @@ $(function() { //quando a página carrega
 		idCostumer = $('#idCliente').val()
 
 		if((idCostumer == 0) || (idCostumer == undefined)){ //Se for para cadastrar --------------------------------------------------
-
 
 			$.ajax({
 				type: "POST",
@@ -49,10 +50,10 @@ $(function() { //quando a página carrega
 				},
 				success: function (response) {
 					clearErrors();
-	
-					if (JSON.parse(response).error) {
+					console.log(response)
+					if (response.error) {
 						console.log('erro ao cadastrar novo Cliente!')
-						response = JSON.parse(response)
+						//response = JSON.parse(response)
 						
 						Swal.fire(
 							'Erro!',
@@ -60,9 +61,9 @@ $(function() { //quando a página carrega
 							'error'
 						)
 	
-						if(response['error_list']){
+						if(response.error_list){
 							
-							showErrorsModal(response['error_list'])
+							showErrorsModal(response.error_list)
 						}
 						
 					} else {
@@ -450,6 +451,7 @@ function showErrorsModal(error_list) {
 
 	$.each(error_list, function(id, message) {
 		$(id).addClass("has-error");
+		console.log(`id: ${id}, message: ${message}`)
 		$(id).siblings(".help-block").html(message)
 	})
 } 

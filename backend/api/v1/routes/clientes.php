@@ -25,12 +25,21 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') /* Listar clientes --------------- */
         //Receber a requisão da pesquisa 
         $requestData = $_REQUEST;
 
-        $clientes = new Cliente();
-        echo $clientes->ajax_list_clientes($requestData);  
+       // $clientes = new Cliente();
+        echo $c->ajax_list_clientes($requestData);  
    
-    }else{
+    }else{ /* Cadastrar cliente --------------- */
+        
+        $error = $c->verifyFields(); //verifica os campos do formulário
+        $aux = json_decode($error);
 
-        echo $c->create($_POST); /* Cadastrar cliente --------------- */
+        if ($aux->error) {
+            echo $error;
+        }else{
+            echo $c->create($_POST); 
+        }
+
+        
     }
     
 

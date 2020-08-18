@@ -282,18 +282,18 @@ class Cliente
 
         $data = array();
 
-        foreach ($datatable['data'] as $supplier) { //para cada registro retornado
+        foreach ($datatable['data'] as $cliente) { //para cada registro retornado
 
 
             // Ler e criar o array de dados ---------------------
             
             $row = [
-                "id"=>$supplier['id'],
-                "nome"=>$supplier['nome'],
-                "dtNasc"=>$supplier['dtNasc'],
-                "RG"=>$supplier['RG'],
-                "CPF"=>$supplier['CPF'],
-                "telefone"=>$supplier['telefone'],      
+                "id"=>$cliente['id'],
+                "nome"=>$cliente['nome'],
+                "dtNasc"=>$cliente['dtNasc'],
+                "RG"=>$cliente['RG'],
+                "CPF"=>$cliente['CPF'],
+                "telefone"=>$cliente['telefone'],      
             ];
 
             $data[] = $row;
@@ -379,6 +379,77 @@ class Cliente
     }
 
 
+    public function verifyFields($update = false)
+    {/*Verifica todos os campos ---------------------------*/
+
+        $errors = array();
+
+        if ($_POST["nome"] == "") {
+            $errors["#nome"] = "Nome é obrigatório!";
+        }
+
+        if ($_POST["dtNasc"] == "") {
+            $errors["#dtNasc"] = "Data de Nascimento é obrigatória!";
+        }
+        
+        if ($_POST["RG"] == "") {
+            $errors["#RG"] = "RG é obrigatório!";
+        }
+
+        if ($_POST["CPF"] == "") {
+            $errors["#CPF"] = "CPF é obrigatório!";
+        }
+        
+        if ($_POST["telefone"] == "") {
+            $errors["#telefone"] = "Telefone é obrigatório!";
+        }
+
+        $exists = 0;
+        $exists = $this->searchName($_POST["nome"]);
+        if (count($exists) > 0) { //se existe nome completo igual já registrado
+
+            if ($update) {
+                foreach ($exists as $cliente) {
+
+          
+                    if (($_POST['nome'] == $cliente['nome']) && ($_POST['id'] != $cliente['id'])) {
+                        $errors["#nome"] = "Já existe um Cliente com esse Nome";
+                        break;
+                    }
+                }
+            } else {
+                $errors["#nome"] = "Já existe um Cliente com esse Nome";
+            }
+        }
+
+        if (count($errors) > 0) { //se tiver algum erro de input (campo) do formulário
+
+            return json_encode([
+                'error' => true,
+                'error_list' => $errors
+            ]);
+        } else { //se ainda não tem erro
+
+            return json_encode([
+                'error' => false
+            ]);
+
+            /*if($this->getfoto() == ""){
+                $json["error_list"]["#desImagePath"] = "Não foi possível fazer Upload da imagem!";               
+            }*/
+        }
+    }/* --- fim verificaErros() ---------------------------*/
+
+    public static function searchName($nome){ //search if name or desc already exists
+
+        $sql = new Sql();
+
+        $results = $sql->select("SELECT * FROM clientes WHERE (nome = :nome)", array(
+            ":nome"=>$nome
+        ));
+
+        return $results;
+    }
 
 
 }
