@@ -32,8 +32,7 @@ class API
             }else{
                 $file = $url[0];
                 
-               header('Location: http://localhost/'.$file.".html");   
-               return;                  
+                return "<script>window.location = http://localhost/".$file.".html</script>";                  
             }       
            
             try
