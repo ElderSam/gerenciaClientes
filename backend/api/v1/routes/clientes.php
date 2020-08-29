@@ -18,50 +18,53 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') /* Listar clientes --------------- */
 
     echo $c->list($id);
 
-}else if($_SERVER['REQUEST_METHOD'] == 'POST') 
+}else if($_SERVER['REQUEST_METHOD'] == 'POST' && $url[3] == "list_datatables") 
+{  
+    //Receber a requisão da pesquisa 
+    $requestData = $_REQUEST;
+
+    // $clientes = new Cliente();
+    echo $c->ajax_list_clientes($requestData);  
+
+}else if($_SERVER['REQUEST_METHOD'] == 'POST' && !is_int($url['3'])) 
 {
-    if($url[3] == "list_datatables")
-    {
-        //Receber a requisão da pesquisa 
-        $requestData = $_REQUEST;
+     /* Cadastrar cliente --------------- */  
+    $error = $c->verifyFields(false); //verifica os campos do formulário
+    $aux = json_decode($error);
 
-       // $clientes = new Cliente();
-        echo $c->ajax_list_clientes($requestData);  
-   
-    }else{ /* Cadastrar cliente --------------- */
-        
-        $error = $c->verifyFields(); //verifica os campos do formulário
-        $aux = json_decode($error);
-
-        if ($aux->error) {
-            echo $error;
-        }else{
-            echo $c->create($_POST); 
-        }
-
-        
+    if ($aux->error) {
+        echo $error;
+    }else{
+        echo $c->create($_POST); 
     }
     
-
-}else if($_SERVER['REQUEST_METHOD'] == 'PUT') /* Atualizar cliente --------------- */
+}else if(($_SERVER['REQUEST_METHOD'] == 'PUT') || ($_SERVER['REQUEST_METHOD'] == 'POST')) /* Atualizar cliente --------------- */
 {
     if(!isset($url[3]))
         exit(json_encode(array('status'=>'error', 'message'=>"Id don't passed by URL (GET)")));
     
     $id = $url[3];
-    $data = urldecode(file_get_contents('php://input'));
-    
-    //echo $data;
 
-    if(strpos($data, '=') !== false)
-    {
-        $allPairs = array();
-        $data = explode('&', $data); //separa tudo que tiver entre & na string e inserre em um array
-        
-        foreach($data as $pair) {
-            $pair = explode('=', $pair);
-            $allPairs[$pair[0]] = $pair[1];
+    if($_SERVER['REQUEST_METHOD'] == 'PUT'){
+        $data = urldecode(file_get_contents('php://input'));
+    
+        //echo $data;
+    
+        if(strpos($data, '=') !== false)
+        {
+            $allPairs = array();
+            $data = explode('&', $data); //separa tudo que tiver entre & na string e inserre em um array
+            
+            foreach($data as $pair) {
+                $pair = explode('=', $pair);
+                $allPairs[$pair[0]] = $pair[1];
+            }
         }
+
+    }else if($url['2'] == 'update'){
+
+        $id = $_POST["id"];
+        $allPairs = $_POST;
     }
 
     echo $c->update($id, $allPairs);

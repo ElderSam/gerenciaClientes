@@ -14,8 +14,7 @@ class API
         
 
         if(isset($requisicao['url'])) //se foi passada uma requisição
-        { 
-        
+        {         
             
             $url = explode('/', $requisicao['url']);
 
@@ -29,15 +28,13 @@ class API
 
                 $file = $url[0];
                 $route = __DIR__ . "\\routes\\".$file.".php"; //monta o caminho para o arquivo da rota solicitada
-     
+                
             }else{
                 $file = $url[0];
-
-                header('Location: http://localhost/'.$file.".html");
-            
                 
+               header('Location: http://localhost/'.$file.".html");   
+               return;                  
             }       
-
            
             try
             {

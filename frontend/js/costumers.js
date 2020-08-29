@@ -30,7 +30,7 @@ $(function() { //quando a página carrega
 	 // de um elemento form
 		let formData = new FormData(form[0]);
 
-		idCostumer = $('#idCliente').val()
+		idCostumer = $('#id').val()
 
 		if((idCostumer == 0) || (idCostumer == undefined)){ //Se for para cadastrar --------------------------------------------------
 
@@ -92,11 +92,12 @@ $(function() { //quando a página carrega
 		}else{ /* se for para Editar -------------------------------------------------- */
 
 			//console.log('você quer editar o cliente: ' + idCostumer)
-			
+
 			$.ajax({
-				type: "POST",
-				url: `/costumer/${idCostumer}`, //rota para editar
+				type: "POST", // or PUT for update
+				url: `http://localhost/api/v1/clientes/${idCostumer}`, //rota para editar
 				data: formData,
+				//data: JSON.stringify(formData),
 				contentType: false,
 				processData: false,
 				beforeSend: function() {
@@ -107,10 +108,10 @@ $(function() { //quando a página carrega
 				success: function (response) {
 					clearErrors();
 
-					if (JSON.parse(response).error) {
+					if (response.error) {
 						console.log('erro ao editar cliente!')
 
-						response = JSON.parse(response)
+						//response = JSON.parse(response)
 
 						Swal.fire(
 							'Erro!',
@@ -245,21 +246,18 @@ function loadCostumer(idCliente) { //carrega todos os campos do modal referente 
 	$('#dtNasc').parent().show(); //aparece a data de cadastro (só para visualizar)
 
 
-	$.getJSON(`http://localhost/api/v1/clientes/json/${idCliente}`, function (data) {
+	$.getJSON(`http://localhost/api/v1/clientes/${idCliente}`, function (data) {
 
+		data = data[0]
+		console.log(data)
 		telefone = mascaraTelefone(data.telefone)
 
-		$("#formCostumer #idCliente").val(data.idCliente);
+		$("#formCostumer #id").val(data.id);
 		$("#formCostumer #nome").val(data.nome).prop('disabled', true);
 		$("#formCostumer #dtNasc").val(data.dtNasc).prop('disabled', true);
 		$("#formCostumer #telefone").val(telefone).prop('disabled', true);
-		$("#formCostumer #cep").val(data.cep).prop('disabled', true);
-		$("#formCostumer #cpf").val(data.cpf).prop('disabled', true);
-		$("#formCostumer #rg").val(data.rg).prop('disabled', true);
-	
-		dtNasc = formatDate(data.dtNasc)
-		$("#formCostumer #dtNasc").val(dtNasc);
-	
+		$("#formCostumer #CPF").val(data.CPF).prop('disabled', true);
+		$("#formCostumer #RG").val(data.RG).prop('disabled', true);
 
 		/* Atualizar Cliente ------------------------------------------------------------------ */
 		$('#btnUpdate').click(function(){ //se eu quiser atualizar o Cliente atual
@@ -272,8 +270,8 @@ function loadCostumer(idCliente) { //carrega todos os campos do modal referente 
 
 		$("#formCostumer #nome").prop('disabled', false);
 		$("#formCostumer #dtNasc").prop('disabled', false);
-		$("#formCostumer #rg").prop('disabled', false);
-		$("#formCostumer #cpf").prop('disabled', false);
+		$("#formCostumer #RG").prop('disabled', false);
+		$("#formCostumer #CPF").prop('disabled', false);
 		$("#formCostumer #telefone").prop('disabled', false);
 		}); /* Fim Atualizar Usuário ---------------------------------------------------------- */
 			
@@ -360,17 +358,17 @@ function limparCampos(){
 	$("#formCostumer #codigo").prop('disabled', true);
 	$("#formCostumer #nome").prop('disabled', false);
 	$("#formCostumer #dtNasc").prop('disabled', false);
-	$("#formCostumer #rg").prop('disabled', false);
-	$("#formCostumer #cpf").prop('disabled', false);
+	$("#formCostumer #RG").prop('disabled', false);
+	$("#formCostumer #CPF").prop('disabled', false);
 	$("#formCostumer #telefone").prop('disabled', false);
 
 
-	$('#idCliente').val(0);
+	$('#id').val(0);
 
 	$('#nome').val('');
 	$('#dtNasc').val('0');
-	$('#rg').val('');
-	$('#cpf').val('');
+	$('#RG').val('');
+	$('#CPF').val('');
 	$('#ie').val('0');
 	$('#cnpj').val('');
 	$('#telefone').val('');
@@ -399,8 +397,8 @@ $(document).on("keydown", "#complemento", function () {
 
 
 $(function(){
-	$("#rg").mask("00.000.000-A");
-	$("#cpf").mask("999.999.999-99",{placeholder:"000.000.000-00"});
+	$("#RG").mask("00.000.000-A");
+	$("#CPF").mask("999.999.999-99",{placeholder:"000.000.000-00"});
 	$("#telefone").mask("(00) 0000-00009", {placeholder:"(00)0000-0000"});
 	$("#cep").mask("99999-999", {placeholder:"00000-000"}); 
 });
