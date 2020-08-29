@@ -33,120 +33,71 @@ $(function() { //quando a página carrega
 		idCostumer = $('#id').val()
 
 		if((idCostumer == 0) || (idCostumer == undefined)){ //Se for para cadastrar --------------------------------------------------
-
-			$.ajax({
-				type: "POST",
-				url: 'http://localhost/api/v1/clientes/create',
-				data: formData,
-				contentType: false,
-				processData: false,
-
-				//Conforme indica a documentação, a opção beforeSend deve ser usada para executar efeitos (ou mudar as
-				// opções da operação), antes da requisição ser efetuada.
-				beforeSend: function() {
-					clearErrors();
-					//$("#btnSaveCostumer").parent().siblings(".help-block").html(loadingImg("Verificando..."));
-				
-				},
-				success: function (response) {
-					clearErrors();
-					console.log(response)
-					if (response.error) {
-						console.log('erro ao cadastrar novo Cliente!')
-						//response = JSON.parse(response)
-						
-						Swal.fire(
-							'Erro!',
-							'Por favor verifique os campos',
-							'error'
-						)
-	
-						if(response.error_list){
-							
-							showErrorsModal(response.error_list)
-						}
-						
-					} else {
-						$('#costumerModal').modal('hide');
-						
-						//console.log(response)
-						Swal.fire(
-							'Sucesso!',
-							'Cliente cadastrado!',
-							'success'
-							)
-	
-						loadTableCostumers();
-						$('#formCostumer').trigger("reset");
-						
-					}
-					
-				},
-				error: function (response) {
-					$('#formCostumer').trigger("reset");
-					console.log(`Erro! Mensagem: ${response}`);
-	
-				}
-			});
+			request = "create";
+			messageMethod = "cadastrar novo";
+			successMessage = "cadastrado";
 
 		}else{ /* se for para Editar -------------------------------------------------- */
-
-			//console.log('você quer editar o cliente: ' + idCostumer)
-
-			$.ajax({
-				type: "POST", // or PUT for update
-				url: `http://localhost/api/v1/clientes/${idCostumer}`, //rota para editar
-				data: formData,
-				//data: JSON.stringify(formData),
-				contentType: false,
-				processData: false,
-				beforeSend: function() {
-					clearErrors();
-					//$("#btnSaveCostumer").parent().siblings(".help-block").html(loadingImg("Verificando..."));
-				
-				},
-				success: function (response) {
-					clearErrors();
-
-					if (response.error) {
-						console.log('erro ao editar cliente!')
-
-						//response = JSON.parse(response)
-
-						Swal.fire(
-							'Erro!',
-							'Por favor verifique os campos',
-							'error'
-						);
-
-						if(response['error_list']){
-							
-							showErrorsModal(response['error_list'])
-						}
-
-					} else {
-						$('#costumerModal').modal('hide');
-
-						Swal.fire(
-							'Sucesso!',
-							'Cliente atualizado!',
-							'success'
-						);
-
-						loadTableCostumers();
-						$('#formCostumer').trigger("reset");
-					}
-	
-				},
-				error: function (response) {
-	
-					//$('#CostumerModal').modal('hide');
-					$('#formCostumer').trigger("reset");
-					console.log(`Erro! Mensagem: ${response}`);
-	
-				}
-			});
+			request = idCostumer;
+			messageMethod = "atualizar";
+			successMessage = "Atualizado";
+			//console.log('você quer editar o cliente: ' + idCostumer)	
 		}	
+
+		$.ajax({
+			type: "POST",
+			url: `http://localhost/api/v1/clientes/${request}`,
+			data: formData,
+			contentType: false,
+			processData: false,
+
+			//Conforme indica a documentação, a opção beforeSend deve ser usada para executar efeitos (ou mudar as
+			// opções da operação), antes da requisição ser efetuada.
+			beforeSend: function() {
+				clearErrors();
+				//$("#btnSaveCostumer").parent().siblings(".help-block").html(loadingImg("Verificando..."));
+			
+			},
+			success: function (response) {
+				clearErrors();
+				console.log(response)
+				if (response.error) {
+					console.log(`erro ao ${messageMethod} Cliente!`)
+					//response = JSON.parse(response)
+					
+					Swal.fire(
+						'Erro!',
+						'Por favor verifique os campos',
+						'error'
+					)
+
+					if(response.error_list){
+						
+						showErrorsModal(response.error_list)
+					}
+					
+				} else {
+					$('#costumerModal').modal('hide');
+					
+					//console.log(response)
+					Swal.fire(
+						'Sucesso!',
+						`Cliente ${successMessage}!`,
+						'success'
+						)
+
+					loadTableCostumers();
+					$('#formCostumer').trigger("reset");
+					
+				}
+				
+			},
+			error: function (response) {
+				$('#formCostumer').trigger("reset");
+				console.log(`Erro! Mensagem: ${response}`);
+
+			}
+		});
 		
 		return false;
 	});
