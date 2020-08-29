@@ -26,9 +26,8 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') /* Listar clientes --------------- */
     // $clientes = new Cliente();
     echo $c->ajax_list_clientes($requestData);  
 
-}else if($_SERVER['REQUEST_METHOD'] == 'POST' && !is_int($url['3'])) 
+}else if($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($url[3])) /* Cadastrar cliente --------------- */  
 {
-     /* Cadastrar cliente --------------- */  
     $error = $c->verifyFields(false); //verifica os campos do formulário
     $aux = json_decode($error);
 
@@ -38,16 +37,17 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') /* Listar clientes --------------- */
         echo $c->create($_POST); 
     }
     
-}else if(($_SERVER['REQUEST_METHOD'] == 'PUT') || ($_SERVER['REQUEST_METHOD'] == 'POST')) /* Atualizar cliente --------------- */
+}else if(($_SERVER['REQUEST_METHOD'] == 'PUT') || ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($url[3]))) /* Atualizar cliente --------------- */
 {
     if(!isset($url[3]))
-        exit(json_encode(array('status'=>'error', 'message'=>"Id don't passed by URL (GET)")));
+        exit(json_encode(array('status'=>'error', 'message'=>"We don't received the correct URL for Update Data")));
     
     $id = $url[3];
 
-    if($_SERVER['REQUEST_METHOD'] == 'PUT'){
+    if($_SERVER['REQUEST_METHOD'] == 'PUT')
+    {
         $data = urldecode(file_get_contents('php://input'));
-    
+
         //echo $data;
     
         if(strpos($data, '=') !== false)
@@ -60,14 +60,21 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') /* Listar clientes --------------- */
                 $allPairs[$pair[0]] = $pair[1];
             }
         }
-
-    }else if($url['2'] == 'update'){
-
-        $id = $_POST["id"];
+    }else{
         $allPairs = $_POST;
+        //print_r($_POST);
     }
 
-    echo $c->update($id, $allPairs);
+
+    /* Atualizar cliente --------------- */  
+    $error = $c->verifyFields(true); //verifica os campos do formulário
+    $aux = json_decode($error);
+
+    if ($aux->error) {
+        echo $error;
+    }else{
+        echo $c->update($id, $allPairs);
+    }
 
 }else if($_SERVER['REQUEST_METHOD'] == 'DELETE') /* Excluir cliente --------------- */
 {

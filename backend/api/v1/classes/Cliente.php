@@ -218,6 +218,8 @@ class Cliente
     /* Atualizar cliente */
     public function update($id, $data)
     {
+       // print_r($data);
+
         $this->setId($id);
         $this->setAll($data);
 
