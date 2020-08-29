@@ -114,7 +114,6 @@ function mascaraTelefone(value){
 
 function loadTableCostumers(){ //carrega a tabela de Clientes depois de umas alteração
 
-
 	if(myTable != null){
 		myTable.destroy(); //desfaz as paginações
 	}
@@ -130,7 +129,7 @@ function loadTableCostumers(){ //carrega a tabela de Clientes depois de umas alt
 			"url": "http://localhost/api/v1/clientes/list_datatables", //chama a rota para carregar os dados 
 			"type": "POST",
 			dataSrc: function (json) {
-				
+			
 				rows = [];
 
 				json.data.forEach(element => {
@@ -141,11 +140,11 @@ function loadTableCostumers(){ //carrega a tabela de Clientes depois de umas alt
 					//Essa variavel você pode apresentar
 					var telFormatado = mascaraTelefone(element.telefone);
 
-					//row['id'] = element.id
+					row['numItem'] = element.numItem
 					
 					row['nome'] = element.nome
 					row['dtNasc'] = formatDate(element.dtNasc)
-					row['RG'] = element.RG
+					//row['RG'] = element.RG
 					row['CPF'] = element.CPF
 					row['telefone'] = telFormatado
 					row['options'] = `<button type='button' title='ver detalhes' class='btn btn-warning btnEdit'
@@ -160,16 +159,16 @@ function loadTableCostumers(){ //carrega a tabela de Clientes depois de umas alt
 					rows.push(row)
 				
 				});
-				
+
 				return rows;
 			},
 
-
 		},
 		"columns": [
+			{ "data": "numItem" },
 			{ "data": "nome" },
 			{ "data": "dtNasc" },
-			{ "data": "RG" },
+			//{ "data": "RG" },
 			{ "data": "CPF" },
 			{"data": "telefone"},
 			{ "data": "options" },
@@ -180,7 +179,6 @@ function loadTableCostumers(){ //carrega a tabela de Clientes depois de umas alt
 			{ targets: "text-center", className: "text-center" },
 		]
 	});
-
 
 }
 

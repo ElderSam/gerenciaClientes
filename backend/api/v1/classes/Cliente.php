@@ -283,14 +283,17 @@ class Cliente
         $datatable = $this->get_datatable($requestData, $column_search, $column_order);
 
         $data = array();
+        $numItem = $requestData['start']; //o índice que começa a numeração para listar os itens na tabela
 
         foreach ($datatable['data'] as $cliente) { //para cada registro retornado
 
+            $numItem++;
 
             // Ler e criar o array de dados ---------------------
             
             $row = [
                 "id"=>$cliente['id'],
+                "numItem"=>$numItem,
                 "nome"=>$cliente['nome'],
                 "dtNasc"=>$cliente['dtNasc'],
                 "RG"=>$cliente['RG'],
