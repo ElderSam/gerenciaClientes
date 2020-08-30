@@ -332,15 +332,17 @@ function limparCampos(){
 }
 
 function formatDate(dateX){ //format Date to input in Form
-    var data = new Date(dateX),
-        dia  = data.getDate().toString(),
-        diaF = (dia.length == 1) ? '0'+dia : dia,
-        mes  = (data.getMonth()+1).toString(), //+1 pois no getMonth Janeiro começa com zero.
-        mesF = (mes.length == 1) ? '0'+mes : mes,
-        anoF = data.getFullYear();
-	return diaF+"/"+mesF+"/"+anoF;
-	//return anoF+"-"+mesF+"-"+diaF;
+	
+	//ex: dateX = '2020-08-30'
+	// substr(posicaInicia, quantidadeCaracteresParaFrente)
+	
+	var ano = dateX.substr(0, 4) //quatro caracteres a partir da posição zero (ex: 2020)
+	var mes = dateX.substr(5, 2) 
+	var dia = dateX.substr(8, 2)
+	
+		return dia+"/"+mes+"/"+ano;
 }
+
 
 $(document).on("keydown", "#complemento", function () {
     var caracteresRestantes = 150;
