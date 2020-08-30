@@ -3,6 +3,8 @@ var myTable = null
 $(function() { //quando a página carrega
 	loadTableCostumers()
 
+	mascaraCampos()
+
 	//Função para o botão que cria novos Clientes
 	$('#btnAddCostumer').click(function(){
 		limparCampos();
@@ -23,6 +25,8 @@ $(function() { //quando a página carrega
 		e.preventDefault();
 
 		$("#telefone").unmask();
+		$("#RG").unmask();
+		$("#CPF").unmask();
 
 		let form = $('#formCostumer');
 
@@ -98,6 +102,8 @@ $(function() { //quando a página carrega
 
 			}
 		});
+
+		mascaraCampos();
 		
 		return false;
 	});
@@ -205,8 +211,13 @@ function loadCostumer(idCliente) { //carrega todos os campos do modal referente 
 		$("#formCostumer #nome").val(data.nome).prop('disabled', true);
 		$("#formCostumer #dtNasc").val(data.dtNasc).prop('disabled', true);
 		$("#formCostumer #telefone").val(telefone).prop('disabled', true);
-		$("#formCostumer #CPF").val(data.CPF).prop('disabled', true);
-		$("#formCostumer #RG").val(data.RG).prop('disabled', true);
+		$("#formCostumer #CPF")
+		.mask("999.999.999-99",{placeholder:"000.000.000-00"})
+			.val(data.CPF).prop('disabled', true);
+			
+		$("#formCostumer #RG")
+			.mask("00.000.000-A")
+			.val(data.RG).prop('disabled', true);
 
 		/* Atualizar Cliente ------------------------------------------------------------------ */
 		$('#btnUpdate').click(function(){ //se eu quiser atualizar o Cliente atual
@@ -302,8 +313,6 @@ function limparCampos(){
 	$('#btnSaveCostumer').val('Cadastrar').show();
 	$('#btnUpdate').hide();
 	
-
-
 	$("#formCostumer #codigo").prop('disabled', true);
 	$("#formCostumer #nome").prop('disabled', false);
 	$("#formCostumer #dtNasc").prop('disabled', false);
@@ -318,8 +327,6 @@ function limparCampos(){
 	$('#dtNasc').val('0');
 	$('#RG').val('');
 	$('#CPF').val('');
-	$('#ie').val('0');
-	$('#cnpj').val('');
 	$('#telefone').val('');
 	//...	
 }
@@ -343,14 +350,12 @@ $(document).on("keydown", "#complemento", function () {
     $(".caracteres").text(caracteresRestantes);
 });
 
-
-
-$(function(){
+function mascaraCampos(){
 	$("#RG").mask("00.000.000-A");
 	$("#CPF").mask("999.999.999-99",{placeholder:"000.000.000-00"});
 	$("#telefone").mask("(00) 0000-00009", {placeholder:"(00)0000-0000"});
-	$("#cep").mask("99999-999", {placeholder:"00000-000"}); 
-});
+	//$("#cep").mask("99999-999", {placeholder:"00000-000"}); 
+};
 
 
 //tradução do DataTables para Português-----------------------------
