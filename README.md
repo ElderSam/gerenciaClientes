@@ -15,8 +15,8 @@ Backend;
 Frontend;
 
     - [ ] cadastro de usuário
-    - [ ] área de login
-    - [ ] cadastro de clientes
+    - [x] área de login
+    - [x] cadastro de clientes
 
 
 
@@ -25,3 +25,35 @@ Frontend;
 Banco de Dados:
     DER (Diagrama Entidade Relacionamento):
     <img src="backend/database/DER.png">
+
+
+Rotas da API;
+
+    Clientes:
+        Listar (Method: GET)
+        http://localhost/api/v1/clientes
+
+        Cadastrar (Method: POST)
+        http://localhost/api/v1/clientes
+
+        Atualizar (Method: POST or PUT)
+        http://localhost/api/v1/clientes/:id
+
+        Excluir (Method: DELETE)
+        http://localhost/api/v1/clientes/:id
+
+
+    Usuários:
+        Listar (Method: GET)
+        http://localhost/api/v1/usuarios
+
+        Cadastrar (Method: POST)
+        http://localhost/api/v1/usuarios
+
+        Atualizar (Method: POST or PUT)
+        http://localhost/api/v1/usuarios/:id
+
+        Excluir (Method: DELETE)
+        http://localhost/api/v1/usuarios/:id
+
+
